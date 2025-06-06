@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toasty's GFX Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Loading Animation */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-bar {
+            width: 300px;
+            height: 10px;
+            background: #333333;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-progress {
+            width: 0;
+            height: 100%;
+            background: #ffffff;
+            animation: load 1.5s ease-in-out forwards;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+
+        .loader-text {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #cccccc;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes load {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        header .logo {
+            font-size: 2em;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        header .logo:hover {
+            transform: scale(1.1);
+        }
+
+        header nav a {
+            color: #cccccc;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.1em;
+            position: relative;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        header nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #ffffff;
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s;
+        }
+
+        header nav a:hover::after {
+            width: 100%;
+        }
+
+        header nav a:hover {
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero h1 {
+            font-size: 4.5em;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        #hero p {
+            font-size: 1.5em;
+            color: #cccccc;
+            max-width: 600px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        #hero .cta {
+            padding: 15px 30px;
+            background: #ffffff;
+            color: #1a1a1a;
+            font-size: 1.2em;
+            text-decoration: none;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        #hero .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.3s;
+        }
+
+        #hero .cta:hover::before {
+            left: 100%;
+        }
+
+        #hero .cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Canvas for 3D Background */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* About Section */
+        #about {
+            padding: 100px 50px;
+            text-align: center;
+            background: #222222;
+        }
+
+        #about h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        #about p {
+            font-size: 1.2em;
+            color: #cccccc;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            animation: bounceIn 1.2s ease-out;
+        }
+
+        /* Services Section */
+        #services {
+            padding: 100px 50px;
+            text-align: center;
+            background: #1a1a1a;
+        }
+
+        #services h2 {
+            font-size: 3em;
+            margin-bottom: 50px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: #333333;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .service-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .service-card p {
+            font-size: 1.1em;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* Portfolio Section */
+        #portfolio {
+            padding: 100px 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+        }
+
+        #portfolio h2 {
+            font-size: 3em;
+            margin-bottom: 50px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery img {
+            width: 100%;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            opacity: 0;
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        .gallery img:nth-child(1) { animation-delay: 0.1s; }
+        .gallery img:nth-child(2) { animation-delay: 0.2s; }
+        .gallery img:nth-child(3) { animation-delay: 0.3s; }
+        .gallery img:nth-child(4) { animation-delay: 0.4s; }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Contact Section */
+        #contact {
+            padding: 100px 50px;
+            text-align: center;
+            background: #222222;
+        }
+
+        #contact h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        #contact p {
+            font-size: 1.2em;
+            color: #cccccc;
+            margin-bottom: 30px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .contact-links a {
+            color: #ffffff;
+            font-size: 1.2em;
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.4s;
+        }
+
+        .contact-links a:hover::before {
+            left: 100%;
+        }
+
+        .contact-links a:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+
+        .contact-links img {
+            width: 24px;
+            height: 24px;
+        }
+
+        @keyframes neonGlow {
+            from {
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.2), 0 0 20px rgba(255, 255, 255, 0.2), 0 0 30px rgba(255, 255, 255, 0.2);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+            }
+
+            header .logo {
+                font-size: 1.5em;
+            }
+
+            header nav a {
+                font-size: 1em;
+                margin: 0 10px;
+            }
+
+            #hero h1 {
+                font-size: 3em;
+            }
+
+            #hero p {
+                font-size: 1.2em;
+            }
+
+            #about, #services, #portfolio, #contact {
+                padding: 50px 20px;
+            }
+
+            #about h2, #services h2, #portfolio h2, #contact h2 {
+                font-size: 2em;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .loader-bar {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+        <div class="loader-text">Loading Toasty's GFX...</div>
+    </div>
+
+    <header>
+        <div class="logo">Toasty's GFX</div>
+        <nav>
+            <a href="#hero">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <h1>TOASTY'S GFX ART</h1>
+        <p>Elevate your Roblox game or profile with stunning thumbnails designed by Toasty.</p>
+        <a href="#contact" class="cta">Hire Me</a>
+    </section>
+
+    <section id="about">
+        <h2>About Toasty</h2>
+        <p>Toasty is a passionate GFX artist specializing in creating eye-catching thumbnails for Roblox games and profile pictures. With a keen eye for detail and a flair for creativity, Toasty brings your ideas to life with vibrant and professional designs. Accepting payments in Robux (RBX) or gift cards, Toasty is ready to make your project stand out!</p>
+    </section>
+
+    <section id="services">
+        <h2>Services</h2>
+        <div class="services-container">
+            <div class="service-card">
+                <h3>Roblox Game Thumbnails</h3>
+                <p>Create vibrant and engaging thumbnails to make your Roblox game stand out in the marketplace. Custom designs tailored to your game's theme and style.</p>
+            </div>
+            <div class="service-card">
+                <h3>Profile Picture Thumbnails</h3>
+                <p>Design unique and professional profile picture thumbnails for your Roblox avatar or social media presence, crafted to reflect your personal style.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio">
+        <h2>Portfolio</h2>
+        <div class="gallery">
+            <!-- Placeholder images; replace with Toasty's actual work -->
+            <img src="11.webp" alt="Thumbnail 1">
+            <img src="12.png" alt="Thumbnail 2">
+            <img src="pfp.png" alt="Thumbnail 3">
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Toasty</h2>
+        <p>Ready to get started? Reach out to Toasty via Discord or Roblox. Payments accepted in Robux (RBX) or gift cards only.</p>
+        <div class="contact-links">
+            <a href="https://discord.com/channels/@me/1380546919595769930" target="_blank">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord Logo">
+                Discord: LIL_Toasty
+            </a>
+            <a href="https://www.roblox.com/users/3110243631/profile" target="_blank">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/roblox.svg" alt="Roblox Logo">
+                Roblox: Toasty
+            </a>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Loading Animation
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 2000);
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 3D Cube with Particles
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('hero-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Cube
+        const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, wireframe: true });
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        scene.add(cube);
+
+        // Particles
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 500;
+        const posArray = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 0.5,
+            color: 0xcccccc
+        });
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+
+        camera.position.z = 30;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            particles.rotation.y += 0.005;
+            particles.rotation.x += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+
+        // Trigger animations on scroll for About, Services, Portfolio, and Contact
+        const observerOptions = {
+            root: null,
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('#about, #services, #portfolio, #contact').forEach(section => {
+            section.classList.add('animate-on-scroll');
+            observer.observe(section);
+        });
+
+        document.querySelectorAll('.gallery img, .service-card').forEach(item => {
+            item.classList.add('animate-on-scroll');
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
